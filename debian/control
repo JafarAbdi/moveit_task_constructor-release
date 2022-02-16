@@ -1,0 +1,12 @@
+Source: ros-rolling-moveit-task-constructor-capabilities
+Section: misc
+Priority: optional
+Maintainer: Michael v4hn Goerner <me@v4hn.de>
+Build-Depends: debhelper (>= 9.0.0), ros-rolling-ament-cmake, ros-rolling-moveit-core, ros-rolling-moveit-ros-move-group, ros-rolling-moveit-ros-planning, ros-rolling-moveit-task-constructor-core, ros-rolling-moveit-task-constructor-msgs, ros-rolling-pluginlib, ros-rolling-rclcpp-action, ros-rolling-std-msgs, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-moveit-task-constructor-capabilities
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-rolling-moveit-core, ros-rolling-moveit-ros-move-group, ros-rolling-moveit-ros-planning, ros-rolling-moveit-task-constructor-core, ros-rolling-moveit-task-constructor-msgs, ros-rolling-pluginlib, ros-rolling-rclcpp-action, ros-rolling-std-msgs, ros-rolling-ros-workspace
+Description: MoveGroupCapabilites to interact with MoveIt
