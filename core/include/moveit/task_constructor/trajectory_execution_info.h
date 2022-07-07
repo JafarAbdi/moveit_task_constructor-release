@@ -1,7 +1,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2017, Bielefeld University
+ *  Copyright (c) 2022, PickNik Inc.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
- *   * Neither the name of Bielefeld University nor the names of its
+ *   * Neither the name of PickNik Inc. nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -32,33 +32,35 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Authors: Luca Lach, Robert Haschke */
+/* Authors: Joe Schornak
+   Desc:    Define a struct to hold options used to configure trajectory execution
+*/
 
 #pragma once
 
-#include <moveit/task_constructor/storage.h>
-#include <moveit/robot_model/robot_model.h>
-#include <moveit/robot_trajectory/robot_trajectory.h>
-#include <moveit/trajectory_processing/time_parameterization.h>
+#include <moveit_task_constructor_msgs/msg/trajectory_execution_info.hpp>
+#include <std_msgs/msg/string.hpp>
+#include <string>
+#include <vector>
+
+namespace {
+using TrajectoryExecutionInfoMsg = moveit_task_constructor_msgs::msg::TrajectoryExecutionInfo;
+}
 
 namespace moveit {
 namespace task_constructor {
+struct TrajectoryExecutionInfo
+{
+	TrajectoryExecutionInfo() {}
 
-/** Create a new JointModelGroup comprising all joints of the given groups
- *
- *  Throws if there are any duplicate, active joints in the groups */
-moveit::core::JointModelGroup* merge(const std::vector<const moveit::core::JointModelGroup*>& groups);
+	TrajectoryExecutionInfo(const TrajectoryExecutionInfoMsg& msg) { controller_names = msg.controller_names; }
 
-/** merge all sub trajectories into a single RobotTrajectory for parallel execution
- *
- * As the RobotTrajectory maintains a pointer to the underlying JointModelGroup
- * (to know about the involved joint names), a merged JointModelGroup needs to be passed
- * or created on the fly. This JMG needs to stay alive during the lifetime of the trajectory.
- * For now, only the trajectory path is considered. Timings, velocities, etc. are ignored.
- */
-robot_trajectory::RobotTrajectoryPtr
-merge(const std::vector<robot_trajectory::RobotTrajectoryConstPtr>& sub_trajectories,
-      const moveit::core::RobotState& base_state, moveit::core::JointModelGroup*& merged_group,
-      const trajectory_processing::TimeParameterization& time_parameterization);
+	TrajectoryExecutionInfoMsg toMsg() const {
+		return moveit_task_constructor_msgs::build<TrajectoryExecutionInfoMsg>().controller_names(controller_names);
+	}
+
+	std::vector<std::string> controller_names;
+};
+
 }  // namespace task_constructor
 }  // namespace moveit

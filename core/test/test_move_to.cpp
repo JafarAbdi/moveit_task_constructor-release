@@ -1,4 +1,5 @@
 #include "models.h"
+#include "stage_mockups.h"
 
 #include <moveit/task_constructor/task.h>
 #include <moveit/task_constructor/stages/move_to.h>
@@ -123,14 +124,8 @@ moveit_msgs::msg::AttachedCollisionObject createAttachedObject(const std::string
 		return p;
 	}());
 	aco.object.primitive_poses.resize(1);
-#if MOVEIT_HAS_OBJECT_POSE
 	aco.object.pose.position.z = 0.2;
 	aco.object.pose.orientation.w = 1.0;
-#else
-	aco.object.primitive_poses[0].position.z = 0.2;
-	aco.object.primitive_poses[0].orientation.w = 1.0;
-#endif
-#if MOVEIT_HAS_STATE_RIGID_PARENT_LINK
 	// If we don't have this, we also don't have subframe support
 	aco.object.subframe_names.resize(1, "subframe");
 	aco.object.subframe_poses.resize(1, [] {
@@ -138,7 +133,6 @@ moveit_msgs::msg::AttachedCollisionObject createAttachedObject(const std::string
 		p.orientation.w = 1.0;
 		return p;
 	}());
-#endif
 	return aco;
 }
 
@@ -151,7 +145,6 @@ TEST_F(PandaMoveTo, poseIKFrameAttachedTarget) {
 	EXPECT_ONE_SOLUTION;
 }
 
-#if MOVEIT_HAS_STATE_RIGID_PARENT_LINK
 // If we don't have this, we also don't have subframe support
 TEST_F(PandaMoveTo, poseIKFrameAttachedSubframeTarget) {
 	const std::string ATTACHED_OBJECT{ "attached_object" };
@@ -163,7 +156,33 @@ TEST_F(PandaMoveTo, poseIKFrameAttachedSubframeTarget) {
 	move_to->setGoal(getFramePoseOfNamedState(scene->getCurrentState(), "ready", IK_FRAME));
 	EXPECT_ONE_SOLUTION;
 }
-#endif
+
+// https://github.com/ros-planning/moveit_task_constructor/pull/371
+TEST(Task, taskMoveConstructor) {
+	auto create_task = [] {
+		moveit::core::RobotModelConstPtr robot_model = getModel();
+		Task t("first");
+		t.setRobotModel(robot_model);
+		auto ref = new stages::FixedState("fixed");
+		auto scene = std::make_shared<planning_scene::PlanningScene>(t.getRobotModel());
+		ref->setState(scene);
+
+		t.add(Stage::pointer(ref));
+		t.add(std::make_unique<ConnectMockup>());
+		t.add(std::make_unique<MonitoringGeneratorMockup>(ref));
+		return t;
+	};
+
+	Task t;
+	t = create_task();
+
+	try {
+		t.init();
+		EXPECT_TRUE(t.plan(1));
+	} catch (const InitStageException& e) {
+		ADD_FAILURE() << "InitStageException:" << std::endl << e << t;
+	}
+}
 
 int main(int argc, char** argv) {
 	testing::InitGoogleTest(&argc, argv);
