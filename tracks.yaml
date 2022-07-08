@@ -20,11 +20,11 @@ tracks:
     patches: null
     release_inc: '1'
     release_repo_url: null
-    release_tag: 100.0.0
+    release_tag: 100.0.1
     ros_distro: humble
     vcs_type: git
     vcs_uri: https://github.com/JafarAbdi/moveit_task_constructor.git
-    version: 100.0.0
+    version: 100.0.1
   rolling:
     actions:
     - bloom-export-upstream :{vcs_local_uri} :{vcs_type} --tag :{release_tag} --display-uri
