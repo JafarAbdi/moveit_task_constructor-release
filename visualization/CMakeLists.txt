@@ -3,6 +3,8 @@ project(moveit_task_constructor_visualization)
 
 find_package(ament_cmake REQUIRED)
 find_package(Boost REQUIRED)
+find_package(moveit_common REQUIRED)
+moveit_package()
 find_package(moveit_core REQUIRED)
 find_package(moveit_ros_visualization REQUIRED)
 find_package(moveit_task_constructor_core REQUIRED)
@@ -27,7 +29,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
+	set(CMAKE_CXX_STANDARD 17)
 endif()
 
 add_subdirectory(visualization_tools)

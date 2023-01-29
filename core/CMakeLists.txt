@@ -5,6 +5,8 @@ find_package(ament_cmake REQUIRED)
 
 find_package(Boost REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(moveit_common REQUIRED)
+moveit_package()
 find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
@@ -23,6 +25,8 @@ add_compile_options(-fvisibility-inlines-hidden)
 set(PROJECT_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include/moveit/task_constructor)
 
 add_subdirectory(src)
+# TODO: enable python wrapper
+#add_subdirectory(python)
 add_subdirectory(test)
 
 install(DIRECTORY include/ DESTINATION include
@@ -30,7 +34,8 @@ install(DIRECTORY include/ DESTINATION include
 
 pluginlib_export_plugin_description_file(${PROJECT_NAME} motion_planning_stages_plugin_description.xml)
 
-ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME} ${PROJECT_NAME}_stages)
 ament_export_dependencies(Boost)
 ament_export_dependencies(geometry_msgs)
 ament_export_dependencies(moveit_core)

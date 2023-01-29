@@ -68,17 +68,13 @@ private:
 	rclcpp_action::CancelResponse
 	preemptCallback(const std::shared_ptr<rclcpp_action::ServerGoalHandle<ExecuteTaskSolutionAction>> goal_handle);
 
-	/** Only accept the goal if we aren't executing one */
-	rclcpp_action::GoalResponse handleNewGoal(const rclcpp_action::GoalUUID& uuid,
-	                                          const ExecuteTaskSolutionAction::Goal::ConstSharedPtr goal) const {
-		if (last_goal_future_.valid() &&
-		    last_goal_future_.wait_for(std::chrono::seconds::zero()) != std::future_status::ready)
-			return rclcpp_action::GoalResponse::REJECT;
+	/** Always accept the goal */
+	rclcpp_action::GoalResponse handleNewGoal(const rclcpp_action::GoalUUID& /*uuid*/,
+	                                          const ExecuteTaskSolutionAction::Goal::ConstSharedPtr /*goal*/) const {
 		return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 	}
 
 	ActionServerType::SharedPtr as_;
-	std::future<void> last_goal_future_;
 };
 
 }  // namespace move_group
