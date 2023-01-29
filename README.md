@@ -1,3 +1,32 @@
+## moveit_task_constructor (humble) - 0.1.0-1
+
+The packages in the `moveit_task_constructor` repository were released into the `humble` distro by running `/home/jafar/.local/bin/bloom-release moveit_task_constructor -t humble -r humble --edit-track` on `Sun, 29 Jan 2023 12:22:01 -0000`
+
+These packages were released:
+- `moveit_task_constructor_capabilities`
+- `moveit_task_constructor_core`
+- `moveit_task_constructor_demo`
+- `moveit_task_constructor_msgs`
+- `moveit_task_constructor_visualization`
+- `rviz_marker_tools`
+
+Version of package(s) in repository `moveit_task_constructor`:
+
+- upstream repository: https://github.com/JafarAbdi/moveit_task_constructor.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `100.0.2-1`
+- new version: `0.1.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.4.24`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## moveit_task_constructor (humble) - 100.0.2-1
 
 The packages in the `moveit_task_constructor` repository were released into the `humble` distro by running `/home/demo/.local/bin/bloom-release moveit_task_constructor -t humble -r humble --override-release-repository-url https://github.com/JafarAbdi/moveit_task_constructor-release.git --edit-track` on `Wed, 07 Sep 2022 04:44:27 -0000`
