@@ -1,0 +1,12 @@
+Source: ros-humble-moveit-task-constructor-msgs
+Section: misc
+Priority: optional
+Maintainer: Robert Haschke <rhaschke@techfak.uni-bielefeld.de>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-moveit-msgs, ros-humble-rosidl-default-generators, ros-humble-visualization-msgs, ros-humble-ros-workspace, ros-humble-rosidl-typesupport-fastrtps-c, ros-humble-rosidl-typesupport-fastrtps-cpp
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-moveit-task-constructor-msgs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-moveit-msgs, ros-humble-rosidl-default-runtime, ros-humble-visualization-msgs, ros-humble-ros-workspace
+Description: Messages for MoveIt Task Pipeline
