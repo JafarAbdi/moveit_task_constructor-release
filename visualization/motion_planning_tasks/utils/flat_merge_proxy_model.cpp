@@ -415,11 +415,11 @@ bool FlatMergeProxyModel::insertModel(QAbstractItemModel* model, int pos) {
 		return false;  // all models must have same column count
 
 	// limit pos to range [0, modelCount()]
-	if (pos > 0 && pos > (int)modelCount())
+	if (pos > 0 && pos > static_cast<int>(modelCount()))
 		pos = modelCount();
 	if (pos < 0)
 		pos = modelCount() + std::max<int>(pos + 1, -modelCount());
-	Q_ASSERT(pos >= 0 && pos <= (int)modelCount());
+	Q_ASSERT(pos >= 0 && pos <= static_cast<int>(modelCount()));
 	auto it = d_ptr->data_.begin();
 	std::advance(it, pos);
 
@@ -467,6 +467,7 @@ std::pair<QAbstractItemModel*, QModelIndex> FlatMergeProxyModel::getModel(const 
 	const QModelIndex& src_index = d_ptr->mapToSource(index, data);
 
 	Q_ASSERT(data);
+	// NOLINTNEXTLINE(clang-analyzer-core.NonNullParamChecker)
 	return std::make_pair(data->model_, src_index);
 }
 
@@ -480,9 +481,9 @@ bool FlatMergeProxyModel::removeModel(int pos) {
 		pos = modelCount() + pos + 1;
 	if (pos < 0)
 		return false;
-	if (pos >= (int)modelCount())
+	if (pos >= static_cast<int>(modelCount()))
 		return false;
-	Q_ASSERT(pos >= 0 && pos < (int)modelCount());
+	Q_ASSERT(pos >= 0 && pos < static_cast<int>(modelCount()));
 
 	auto it = d_ptr->data_.begin();
 	std::advance(it, pos);
