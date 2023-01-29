@@ -37,7 +37,6 @@
 #include <moveit/task_constructor/container_p.h>
 #include <moveit/task_constructor/introspection.h>
 #include <moveit/task_constructor/merge.h>
-#include <moveit/task_constructor/moveit_compat.h>
 #include <moveit/planning_scene/planning_scene.h>
 #include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
 
@@ -58,8 +57,10 @@ namespace moveit {
 namespace task_constructor {
 
 // for debugging of how children interfaces evolve over time
-static void printChildrenInterfaces(const ContainerBasePrivate& container, bool success, const Stage& creator,
-                                    std::ostream& os = std::cerr) {
+__attribute__((unused))  // silent unused-function warning
+static void
+printChildrenInterfaces(const ContainerBasePrivate& container, bool success, const Stage& creator,
+                        std::ostream& os = std::cerr) {
 	static unsigned int id = 0;
 	const unsigned int width = 10;  // indentation of name
 	os << std::endl << (success ? '+' : '-') << ' ' << creator.name() << ' ';
@@ -341,6 +342,12 @@ Stage* ContainerBase::findChild(const std::string& name) const {
 	return nullptr;
 }
 
+Stage* ContainerBase::operator[](int index) const {
+	auto impl = pimpl();
+	auto it = impl->childByIndex(index, false);
+	return it != impl->children().end() ? it->get() : nullptr;
+}
+
 bool ContainerBase::traverseChildren(const ContainerBase::StageCallback& processor) const {
 	return pimpl()->traverseStages(processor, 0, 1);
 }
@@ -357,8 +364,6 @@ void ContainerBase::add(Stage::pointer&& stage) {
 void ContainerBase::insert(Stage::pointer&& stage, int before) {
 	if (!stage)
 		throw std::runtime_error(name() + ": received invalid stage pointer");
-
-	stage->setTrajectoryExecutionInfo(this->trajectoryExecutionInfo());
 
 	StagePrivate* impl = stage->pimpl();
 	impl->setParent(this);
@@ -1051,10 +1056,11 @@ void FallbacksPrivateConnect::compute() {
 
 void FallbacksPrivateConnect::onNewFailure(const Stage& child, const InterfaceState* from, const InterfaceState* to) {
 	// expect failure to be reported from active child
-	assert(active_ != children().end() && active_->get() == &child);
+	assert(active_ != children().end() && active_->get() == &child); (void)child;
 	// ... thus we can use std::next(active_) to find the next child
 	auto next = std::next(active_);
 
+	// NOLINTNEXTLINE(readability-identifier-naming)
 	auto findIteratorFor = [](const InterfaceState* state, const Interface& interface) {
 		auto it = std::find(interface.begin(), interface.end(), state);
 		assert(it != interface.end());
@@ -1064,9 +1070,9 @@ void FallbacksPrivateConnect::onNewFailure(const Stage& child, const InterfaceSt
 	if (next != children().end()) {  // pass job to next child
 		auto next_con = static_cast<ConnectingPrivate*>(const_cast<StagePrivate*>((*next)->pimpl()));
 		auto first_con = static_cast<const ConnectingPrivate*>(children().front()->pimpl());
-		auto fromIt = findIteratorFor(from, *first_con->starts());
-		auto toIt = findIteratorFor(to, *first_con->ends());
-		next_con->pending.insert(std::make_pair(fromIt, toIt));
+		auto from_it = findIteratorFor(from, *first_con->starts());
+		auto to_it = findIteratorFor(to, *first_con->ends());
+		next_con->pending.insert(std::make_pair(from_it, to_it));
 	} else  // or report failure to parent
 		parent()->pimpl()->onNewFailure(*me(), from, to);
 }

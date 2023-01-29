@@ -6,7 +6,6 @@ add_library(${PROJECT_NAME}_stages SHARED
 	${PROJECT_INCLUDE}/stages/fixed_state.h
 	${PROJECT_INCLUDE}/stages/fixed_cartesian_poses.h
 	${PROJECT_INCLUDE}/stages/generate_pose.h
-	${PROJECT_INCLUDE}/stages/generate_random_pose.h
 	${PROJECT_INCLUDE}/stages/generate_grasp_pose.h
 	${PROJECT_INCLUDE}/stages/generate_place_pose.h
 	${PROJECT_INCLUDE}/stages/compute_ik.h
@@ -27,7 +26,6 @@ add_library(${PROJECT_NAME}_stages SHARED
 	fixed_state.cpp
 	fixed_cartesian_poses.cpp
 	generate_pose.cpp
-	generate_random_pose.cpp
 	generate_grasp_pose.cpp
 	generate_place_pose.cpp
 	compute_ik.cpp
@@ -43,18 +41,18 @@ add_library(${PROJECT_NAME}_stages SHARED
 )
 target_link_libraries(${PROJECT_NAME}_stages ${PROJECT_NAME})
 ament_target_dependencies(${PROJECT_NAME}_stages
-    moveit_core
-    geometry_msgs
-    moveit_ros_planning
-    moveit_ros_planning_interface
-    moveit_task_constructor_msgs
-    rclcpp
-    tf2_eigen
-    visualization_msgs
+	moveit_core
+	geometry_msgs
+	moveit_ros_planning
+	moveit_ros_planning_interface
+	moveit_task_constructor_msgs
+	rclcpp
+	tf2_eigen
+	visualization_msgs
 )
 
 add_library(${PROJECT_NAME}_stage_plugins SHARED
-   plugins.cpp
+	plugins.cpp
 )
 target_link_libraries(${PROJECT_NAME}_stage_plugins ${PROJECT_NAME}_stages)
 
