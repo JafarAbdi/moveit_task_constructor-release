@@ -14,17 +14,17 @@ tracks:
       :{release_inc} --os-name fedora
     - git-bloom-generate -y rosrpm --prefix release/:{ros_distro} :{ros_distro} -i
       :{release_inc} --os-name rhel
-    devel_branch: pr-ms_humble
+    devel_branch: test-release
     last_version: 100.0.2
     name: upstream
     patches: null
     release_inc: '1'
     release_repo_url: null
-    release_tag: 100.0.2
+    release_tag: ros2-0.1.0
     ros_distro: humble
     vcs_type: git
     vcs_uri: https://github.com/JafarAbdi/moveit_task_constructor.git
-    version: 100.0.2
+    version: 0.1.0
   rolling:
     actions:
     - bloom-export-upstream :{vcs_local_uri} :{vcs_type} --tag :{release_tag} --display-uri
