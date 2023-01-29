@@ -39,7 +39,6 @@
 
 #pragma once
 
-#include "trajectory_execution_info.h"
 #include "utils.h"
 #include <moveit/macros/class_forward.h>
 #include <moveit/task_constructor/storage.h>
@@ -202,14 +201,6 @@ public:
 	/// marker namespace of solution markers
 	const std::string& markerNS() { return properties().get<std::string>("marker_ns"); }
 
-	/// Set and get info to use when executing the stage's trajectory
-	void setTrajectoryExecutionInfo(TrajectoryExecutionInfo trajectory_execution_info) {
-		setProperty("trajectory_execution_info", trajectory_execution_info);
-	}
-	TrajectoryExecutionInfo trajectoryExecutionInfo() {
-		return properties().get<TrajectoryExecutionInfo>("trajectory_execution_info");
-	}
-
 	/// forwarding of properties between interface states
 	void forwardProperties(const InterfaceState& source, InterfaceState& dest);
 	std::set<std::string> forwardedProperties() const {
@@ -300,8 +291,8 @@ public:
 
 	// Default implementations, using generic compute().
 	// Override if you want to use different code for FORWARD and BACKWARD directions.
-	virtual void computeForward(const InterfaceState& from) { computeGeneric<Interface::FORWARD>(from); }
-	virtual void computeBackward(const InterfaceState& to) { computeGeneric<Interface::BACKWARD>(to); }
+	virtual void computeForward(const InterfaceState& from);
+	virtual void computeBackward(const InterfaceState& to);
 
 protected:
 	// constructor for use in derived classes

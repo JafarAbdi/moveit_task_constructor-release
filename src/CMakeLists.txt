@@ -36,24 +36,23 @@ add_library(${PROJECT_NAME} SHARED
 	solvers/joint_interpolation.cpp
 )
 ament_target_dependencies(${PROJECT_NAME}
-    moveit_core
-    geometry_msgs
-    moveit_ros_planning
-    moveit_ros_planning_interface
-    moveit_task_constructor_msgs
-    rclcpp
-    rviz_marker_tools
-    visualization_msgs
+	moveit_core
+	geometry_msgs
+	moveit_ros_planning
+	moveit_ros_planning_interface
+	moveit_task_constructor_msgs
+	rclcpp
+	rviz_marker_tools
+	visualization_msgs
 )
 target_include_directories(${PROJECT_NAME}
 	PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-	       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-	       $<INSTALL_INTERFACE:include>
+	PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
 add_subdirectory(stages)
 
 install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}Targets
+        EXPORT ${PROJECT_NAME}
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)

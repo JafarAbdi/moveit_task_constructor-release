@@ -87,7 +87,7 @@ public:
 		ARMED,  // disabled state in a Connecting interface that will become re-enabled with a new opposite state
 		PRUNED,  // disabled state on a pruned solution branch
 	};
-	static const char* STATUS_COLOR[];
+	static const char* colorForStatus(unsigned int s) { return STATUS_COLOR_[s]; }
 
 	/** InterfaceStates are ordered according to two values:
 	 *  Depth of interlinked trajectory parts and accumulated trajectory costs along that path.
@@ -158,6 +158,7 @@ private:
 	inline void setPriority(const Priority& prio) { priority_ = prio; }
 
 private:
+	static const char* STATUS_COLOR_[];
 	planning_scene::PlanningSceneConstPtr scene_;
 	PropertyMap properties_;
 	/// trajectories which are *timewise before* this state
@@ -249,7 +250,7 @@ private:
 
 std::ostream& operator<<(std::ostream& os, const InterfaceState::Priority& prio);
 std::ostream& operator<<(std::ostream& os, const Interface& interface);
-std::ostream& operator<<(std::ostream& os, Interface::Direction);
+std::ostream& operator<<(std::ostream& os, Interface::Direction dir);
 
 /// Find index of the iterator in the container. Counting starts at 1. Zero corresponds to not found.
 template <typename T>
