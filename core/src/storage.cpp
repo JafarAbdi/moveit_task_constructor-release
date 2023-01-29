@@ -169,7 +169,7 @@ std::ostream& operator<<(std::ostream& os, const Interface& interface) {
 		os << istate->priority() << "  ";
 	return os;
 }
-const char* InterfaceState::STATUS_COLOR[] = {
+const char* InterfaceState::STATUS_COLOR_[] = {
 	"\033[32m",  // ENABLED - green
 	"\033[33m",  // ARMED - yellow
 	"\033[31m",  // PRUNED - red
@@ -177,8 +177,8 @@ const char* InterfaceState::STATUS_COLOR[] = {
 };
 std::ostream& operator<<(std::ostream& os, const InterfaceState::Priority& prio) {
 	// maps InterfaceState::Status values to output (color-changing) prefix
-	os << InterfaceState::STATUS_COLOR[prio.status()] << prio.depth() << ":" << prio.cost()
-	   << InterfaceState::STATUS_COLOR[3];
+	os << InterfaceState::colorForStatus(prio.status()) << prio.depth() << ":" << prio.cost()
+	   << InterfaceState::colorForStatus(3);
 	return os;
 }
 std::ostream& operator<<(std::ostream& os, Interface::Direction dir) {
@@ -222,10 +222,6 @@ void SubTrajectory::fillMessage(moveit_task_constructor_msgs::msg::Solution& msg
 	msg.sub_trajectory.emplace_back();
 	moveit_task_constructor_msgs::msg::SubTrajectory& t = msg.sub_trajectory.back();
 	SolutionBase::fillInfo(t.info, introspection);
-
-	const auto trajectory_execution_info =
-	    creator()->properties().get<TrajectoryExecutionInfo>("trajectory_execution_info");
-	t.execution_info = trajectory_execution_info.toMsg();
 
 	if (trajectory())
 		trajectory()->getRobotTrajectoryMsg(t.trajectory);
