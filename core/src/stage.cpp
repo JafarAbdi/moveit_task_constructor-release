@@ -38,7 +38,6 @@
 #include <moveit/task_constructor/stage_p.h>
 #include <moveit/task_constructor/container_p.h>
 #include <moveit/task_constructor/introspection.h>
-#include <moveit/task_constructor/moveit_compat.h>
 
 #include <moveit/planning_scene/planning_scene.h>
 
@@ -126,8 +125,8 @@ StagePrivate& StagePrivate::operator=(StagePrivate&& other) {
 	prev_ends_ = std::move(other.prev_ends_);
 	next_starts_ = std::move(other.next_starts_);
 
-	parent_ = std::move(other.parent_);
-	it_ = std::move(other.it_);
+	parent_ = other.parent_;
+	it_ = other.it_;
 	other.unparent();
 
 	return *this;
@@ -309,8 +308,6 @@ Stage::Stage(StagePrivate* impl) : pimpl_(impl) {
 	auto& p = properties();
 	p.declare<double>("timeout", "timeout per run (s)");
 	p.declare<std::string>("marker_ns", name(), "marker namespace");
-	p.declare<TrajectoryExecutionInfo>("trajectory_execution_info", TrajectoryExecutionInfo(),
-	                                   "settings used when executing the trajectory");
 
 	p.declare<std::set<std::string>>("forwarded_properties", std::set<std::string>(),
 	                                 "set of interface properties to forward");
@@ -619,6 +616,14 @@ template void PropagatingEitherWay::send<Interface::FORWARD>(const InterfaceStat
 template void PropagatingEitherWay::send<Interface::BACKWARD>(const InterfaceState& start, InterfaceState&& end,
                                                               SubTrajectory&& trajectory);
 
+void PropagatingEitherWay::computeForward(const InterfaceState& from) {
+	computeGeneric<Interface::FORWARD>(from);
+}
+
+void PropagatingEitherWay::computeBackward(const InterfaceState& to) {
+	computeGeneric<Interface::BACKWARD>(to);
+}
+
 template <Interface::Direction dir>
 void PropagatingEitherWay::computeGeneric(const InterfaceState& start) {
 	planning_scene::PlanningScenePtr end;
@@ -629,9 +634,6 @@ void PropagatingEitherWay::computeGeneric(const InterfaceState& start) {
 	else
 		send<dir>(start, InterfaceState(end), std::move(trajectory));
 }
-// Explicitly instantiate templates for both directions
-template void PropagatingEitherWay::computeGeneric<Interface::FORWARD>(const InterfaceState& start);
-template void PropagatingEitherWay::computeGeneric<Interface::BACKWARD>(const InterfaceState& start);
 
 PropagatingForwardPrivate::PropagatingForwardPrivate(PropagatingForward* me, const std::string& name)
   : PropagatingEitherWayPrivate(me, PropagatingEitherWay::FORWARD, name) {
@@ -860,12 +862,12 @@ void ConnectingPrivate::compute() {
 }
 
 std::ostream& ConnectingPrivate::printPendingPairs(std::ostream& os) const {
-	const char* reset = InterfaceState::STATUS_COLOR[3];
+	const char* reset = InterfaceState::colorForStatus(3);
 	for (const auto& candidate : pending) {
 		size_t first = getIndex(*starts(), candidate.first);
 		size_t second = getIndex(*ends(), candidate.second);
-		os << InterfaceState::STATUS_COLOR[candidate.first->priority().status()] << first << reset << ":"
-		   << InterfaceState::STATUS_COLOR[candidate.second->priority().status()] << second << reset << " ";
+		os << InterfaceState::colorForStatus(candidate.first->priority().status()) << first << reset << ":"
+		   << InterfaceState::colorForStatus(candidate.second->priority().status()) << second << reset << " ";
 	}
 	if (pending.empty())
 		os << "---";

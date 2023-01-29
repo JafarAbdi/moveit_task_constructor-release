@@ -18,7 +18,6 @@ set(msg_files
 	"msg/SubTrajectory.msg"
 	"msg/TaskDescription.msg"
 	"msg/TaskStatistics.msg"
-        "msg/TrajectoryExecutionInfo.msg"
 )
 
 set(srv_files
@@ -32,11 +31,11 @@ set(action_files
 rosidl_generate_interfaces(${PROJECT_NAME}
 	${msg_files}
 	${srv_files}
-  	${action_files}
+	${action_files}
 	DEPENDENCIES
-		builtin_interfaces
-		moveit_msgs
-		visualization_msgs
+	builtin_interfaces
+	moveit_msgs
+	visualization_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)
